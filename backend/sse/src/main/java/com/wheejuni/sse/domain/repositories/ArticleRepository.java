@@ -1,4 +1,7 @@
 package com.wheejuni.sse.domain.repositories;
 
-public class ArticleRepository {
+import com.wheejuni.sse.domain.Article;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+
+public interface ArticleRepository extends ReactiveMongoRepository<Article, Long>{
 }
