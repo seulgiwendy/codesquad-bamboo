@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Article {
 
     @Id
-    private long id;
+    private String id;
 
     private String writer;
     private String article;

@@ -10,9 +10,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ArticleDto {
-
     private String content;
-
-
-
 }

@@ -1,17 +1,24 @@
 package com.wheejuni.sse.utils;
 
 import com.wheejuni.sse.domain.Article;
+import com.wheejuni.sse.domain.repositories.ArticleRepository;
+import org.jooq.lambda.Seq;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+@Service
 public class ArticleUtils {
 
-    private static final Random RANDOM_MODULE = new Random();
+    private static final int ARTICLE_ID_LENGTH = 10;
 
     public enum Prefixes {
+
         ANONYMOUS("익명의"),
         LEGENDARY("전설의"),
         PRETTY("어여쁜");
@@ -33,6 +40,7 @@ public class ArticleUtils {
     }
 
     public enum WriterNames {
+
         POBI("포비"),
         ELLY("엘리"),
         ALIENS("알린"),
@@ -40,7 +48,7 @@ public class ArticleUtils {
         TRAM("트램"),
         MIN("민"),
         HOON("훈"),
-        BEOWOLF("베오울프"),
+        BEOWULF("베오울프"),
         RYAN("라이언");
 
         private String name;
@@ -59,19 +67,39 @@ public class ArticleUtils {
         }
     }
 
-    public static Article appendWriterName(Article article) {
+    public Article appendWriterName(Article article) {
         return Arrays.asList(article).stream().map(a -> {
             a.setWriter(generateWriterName());
             return a;
         }).findFirst().get();
     }
 
-    private static String generateWriterName() {
+    public Article appendGeneratedId(Article article) {
+        return Arrays.asList(article).stream().map(a -> {
+            a.setId(generateRandomString());
+            return a;
+        }).findFirst().get();
+    }
+
+    private String generateWriterName() {
         StringBuilder writerName = new StringBuilder();
         writerName.append(Prefixes.getRandomPrefixes());
         writerName.append(" ");
         writerName.append(WriterNames.getRandomNames());
 
         return writerName.toString();
+    }
+
+    private static String generateRandomString() {
+        List<String> alphabet = Seq.rangeClosed('a', 'z').map(Object::toString).toList();
+        Collections.shuffle(alphabet);
+        StringBuffer generatedId = new StringBuffer();
+
+        while(generatedId.length() < ARTICLE_ID_LENGTH) {
+            generatedId.append(alphabet.stream().findFirst().get());
+            Collections.shuffle(alphabet);
+        }
+
+        return generatedId.toString();
     }
 }
